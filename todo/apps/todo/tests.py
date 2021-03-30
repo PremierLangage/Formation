@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from apps.todo.models import Todo
+from .models import Todo
 
 
 class TodoTest(TestCase):
@@ -28,21 +28,21 @@ class TodoTest(TestCase):
             'task': 'Task 5',
             'completed': False
         })
-        self.assertRedirects(response, '/', status_code=302)
+        self.assertEqual(response.status_code, 200)
         todos = Todo.objects.all()
         self.assertEqual(todos.last().task, "Task 5")
 
     
     def test_complete(self):
         response = self.client.post(reverse('todo:complete', kwargs={"id": 1}))
-        self.assertRedirects(response, '/', status_code=302)
+        self.assertEqual(response, '/', status_code=200)
         response = self.client.post(reverse('todo:complete', kwargs={"id": 1}))
         self.assertEqual(response.status_code, 400)
 
 
     def test_uncomplete(self):
         response = self.client.post(reverse('todo:uncomplete', kwargs={"id": 2}))
-        self.assertRedirects(response, '/', status_code=302)
+        self.assertEqual(response.status_code, 200)
         response = self.client.post(reverse('todo:uncomplete', kwargs={"id": 2}))
         self.assertEqual(response.status_code, 400)
 
@@ -50,6 +50,6 @@ class TodoTest(TestCase):
     def test_delete(self):
         todo = Todo.objects.get(id=1)
         response = self.client.post(reverse('todo:delete', kwargs={"id": todo.id}))
-        self.assertRedirects(response, '/', status_code=302)
+        self.assertEqual(response.status_code, 200)
         todos = Todo.objects.all()
         self.assertNotIn(todo, todos)

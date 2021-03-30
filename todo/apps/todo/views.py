@@ -1,7 +1,6 @@
-from django.contrib import messages
+import json
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.http.response import JsonResponse
-from django.shortcuts import redirect, render
 from django.views.decorators.http import require_GET, require_POST
 
 from apps.todo.forms import TodoForm
@@ -25,14 +24,34 @@ def index(request):
 
 @require_POST
 @csrf_exempt
-def create(request):
-    form = TodoForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        messages.success(request, ('Task has been added!'))
-        return JsonResponse({ "success": True })
+def find(request, id):
+    try:
+        todo = Todo.objects.get(id=id)
+        return JsonResponse({
+            "id": todo.id,
+            "task": todo.task,
+            "completed": todo.completed
+        })
+    except Todo.DoesNotExist:
+        return HttpResponseNotFound('Task does not exist!')
 
-    return HttpResponseBadRequest('Task form is not valid')
+
+
+@require_POST
+@csrf_exempt
+def create(request):
+    form = json.loads(request.body)
+    
+    todo = Todo.objects.create(
+        task=form.get("task"),
+        completed=form.get("completed")
+    )
+
+    return JsonResponse({
+        "id": todo.id,
+        "task": todo.task,
+        "completed": todo.completed
+    })
 
 
 @require_POST
@@ -48,7 +67,6 @@ def complete(request, id):
 
     todo.completed = True
     todo.save()
-    messages.success(request, ('Task has been marked as complete!'))
     return JsonResponse({ "success": True })
 
 
@@ -65,7 +83,6 @@ def uncomplete(request, id):
     
     todo.completed = False
     todo.save()
-    messages.success(request, ('Task has been marked as uncomplete!'))
     return JsonResponse({ "success": True })
 
 
@@ -74,9 +91,7 @@ def uncomplete(request, id):
 def delete(request, id):
     try:
         todo = Todo.objects.get(id=id)
+        todo.delete()
+        return JsonResponse({ "success": True })
     except Todo.DoesNotExist:
         return HttpResponseNotFound('Task does not exist!')
-
-    todo.delete()
-    messages.success(request, ('Task has been Deleted!'))
-    return JsonResponse({ "success": True })
