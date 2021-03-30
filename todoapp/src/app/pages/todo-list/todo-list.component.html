@@ -1,0 +1,10 @@
+<p *ngFor="let item of items">
+  {{item|json}}
+</p>
+
+<!-- <input #input type="number" />
+<button (click)="onClick(input.value, $event)">+</button>
+ -->
+
+<input [(ngModel)]="task" type="text" />
+<button (click)="onClick()">+</button>
