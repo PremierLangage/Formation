@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include "form.html" %}
+<table class="uk-table uk-table-divider">
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Completed</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for todo in todos %}
+    <tr>
+      <td>
+        {% if todo.completed == True %}
+          <span class="completed">{{ todo.task }}</span>
+        {% else %}
+          {{ todo.task }}
+        {% endif %}
+      </td>
+      <td>
+        {% if todo.completed == True %}
+          <form method="POST" action="uncomplete/{{ todo.id }}">
+            {% csrf_token %}
+            <button class="btn-transparent" type="submit">
+            <i class="far fa-check-circle"></i> {{ todo.completed }}
+            </button>
+          </form>
+        {% else %}
+          <form method="POST" action="complete/{{ todo.id }}">
+            {% csrf_token %}
+            <button class="btn-transparent" type="submit">
+              <i class="far fa-circle"></i> {{ todo.completed }}
+            </button>
+          </form>
+        {% endif %}
+      </td>
+      <td>
+        <form method="POST" action="delete/{{ todo.id }}">
+          {% csrf_token %}
+          <button class="btn-transparent" type="submit">
+            <span uk-icon="icon: trash;"></span>
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+  </tbody>
+</table>
+{% endblock %}

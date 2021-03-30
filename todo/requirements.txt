@@ -1,0 +1,5 @@
+django<3.1.2
+tox
+gunicorn
+dj-database-url
+whitenoise

@@ -1,0 +1,45 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <link rel="shortcut icon" href="{% static 'images/todo.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'uikit/css/uikit.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+</head>
+<body>
+    <header>
+        <nav class="uk-navbar-container uk-margin" uk-navbar>
+            <div class="uk-navbar-left">
+                <a class="uk-navbar-item uk-logo" href="">
+                    <img class="logo" src="{% static 'images/todo.png' %}" alt="Logo">
+                </a>
+                <ul class="uk-navbar-nav">
+                    <li>
+                        <a href="">
+                            Todo App
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main>
+        {% if messages %}
+            {% for message in messages %}
+            <article class="uk-alert-primary" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p>{{message}}</p>
+            </article>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock content %}
+    </main>
+    <script src="{% static 'uikit/js/uikit.min.js' %}"></script>
+    <script src="{% static 'uikit/js/uikit-icons.min.js' %}"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+</body>
+</html>
